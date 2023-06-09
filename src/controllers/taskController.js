@@ -1,4 +1,3 @@
-
 const Task = require("../models/taskModel");
 
 exports.createTask = async (req, res) => {
@@ -46,21 +45,24 @@ exports.getTasksByUser = async (req, res) => {
   }
 };
 
+//admin
 exports.getTaskById = async (req, res) => {
-    try {
-      const id = req.params.id;
-  
-      const task = await Task.findById(id);
-  
-      if (!task) {
-        return res.status(404).json({ status: false, message: "Task not found" });
-      }
-  
-      return res.status(200).json({ status: true, message: "Success", data: task });
-    } catch (error) {
-      res.status(500).json({ status: false, message: error.message });
+  try {
+    const id = req.params.id;
+
+    const task = await Task.findById(id);
+
+    if (!task) {
+      return res.status(404).json({ status: false, message: "Task not found" });
     }
-  };
+
+    return res
+      .status(200)
+      .json({ status: true, message: "Success", data: task });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
 
 exports.updateTask = async (req, res) => {
   try {
@@ -87,15 +89,13 @@ exports.updateTask = async (req, res) => {
   }
 };
 
-
 exports.deleteTask = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const task = await Task.findByIdAndUpdate(
-      id,
-      { isDeleted: true },
-      { new: true }
+    const task = await Task.findOneAndUpdate(
+      { _id: id, isDeleted: false },
+      { isDeleted: true }
     );
 
     if (!task) {
@@ -111,6 +111,90 @@ exports.deleteTask = async (req, res) => {
   }
 };
 
+exports.geteee = async (req, res) => {
+  try {
 
+    // let groups = await Task.aggregate([{ $group: { _id: "$description" } }]);
 
+    // let groups = await Task.aggregate([{$limit:2}])
 
+    // let groups = await Task.aggregate([{$project:{"title":0,"description":0,"dueDate":0 }},{$limit:3}])
+
+    // let groups = await Task.aggregate([{$sort:{"dueDate": -1}}, {$project: {"title":1, "description":1, "dueDate":1}}, {$limit: 5}])
+
+    // let groups = await Task.aggregate([
+    //   { $match: { priority: "high" } },
+    //   { $limit: 5 },
+    //   { $project: { title: 1, description: 1, dueDate: 1, priority: 1 } },
+    // ]);
+
+    // let groups = await Task.aggregate([{$match:{priority: "high"}}, {$count: "totalHighPriority"}])
+
+    // let groups = await Task.aggregate([ { $lookup: { from: "User", localField: "user_id", foreignField: "_id",  as: "user_details",  },},{  $limit: 1,   }, ]);
+
+    // let groups = await Task.aggregate([
+    //   {
+    //     $lookup: {
+    //       from: "User",
+    //       localField: "user_id",
+    //       foreignField: "_id",
+    //       as: "user_details",
+    //     },
+    //   },
+    //   {
+    //     $limit: 1
+    //   },
+    //   {
+    //     $project: {
+    //       title: 1,
+    //       description: 1,
+    //       dueDate: 1,
+    //       user_details: {
+    //         name: 1,
+    //         email: 1
+    //       }
+    //     }
+    //   }
+    // ]);
+    
+
+    res.status(200).json({ status: true, data: groups });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+//$addFields
+// exports.geteee = async (req, res) => {
+//   try {
+//     let groups = await Task.aggregate([
+//       { $match: { priority: "high" } },
+//       { $limit: 3},
+//       {
+//         $addFields: {
+//           daysRemaining: {
+//             $ceil: {
+//               $divide: [
+//                 { $subtract: ["$dueDate", new Date()] },
+//                 1000 * 3600 * 24,
+//               ],
+//             },
+//           },
+//         },
+//       },
+//       {
+//         $project: {
+//           title: 1,
+//           description: 1,
+//           dueDate: 1,
+//           priority: 1,
+//           daysRemaining: 1,
+//         },
+//       },
+//     ]);
+
+//     res.status(200).json({ status: true, data: groups });
+//   } catch (error) {
+//     res.status(500).json({ status: false, message: error.message });
+//   }
+// };
