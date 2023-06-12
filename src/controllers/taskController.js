@@ -45,6 +45,7 @@ exports.getTasksByUser = async (req, res) => {
   }
 };
 
+
 //admin
 exports.getTaskById = async (req, res) => {
   try {
@@ -63,6 +64,7 @@ exports.getTaskById = async (req, res) => {
     res.status(500).json({ status: false, message: error.message });
   }
 };
+
 
 exports.updateTask = async (req, res) => {
   try {
@@ -113,7 +115,6 @@ exports.deleteTask = async (req, res) => {
 
 exports.geteee = async (req, res) => {
   try {
-
     // let groups = await Task.aggregate([{ $group: { _id: "$description" } }]);
 
     // let groups = await Task.aggregate([{$limit:2}])
@@ -130,33 +131,25 @@ exports.geteee = async (req, res) => {
 
     // let groups = await Task.aggregate([{$match:{priority: "high"}}, {$count: "totalHighPriority"}])
 
-    // let groups = await Task.aggregate([ { $lookup: { from: "User", localField: "user_id", foreignField: "_id",  as: "user_details",  },},{  $limit: 1,   }, ]);
+    let groups = await Task.aggregate([ { $lookup: { from: "User", localField: "user", foreignField: "_id",  as: "user_details",  },},{  $limit: 1,   }, ]);
 
+    // const query = req.query; 
     // let groups = await Task.aggregate([
     //   {
-    //     $lookup: {
-    //       from: "User",
-    //       localField: "user_id",
-    //       foreignField: "_id",
-    //       as: "user_details",
+    //     $search: {
+    //       index: "default",
+    //       text: {
+    //         query,
+    //         path: "title",
+    //       },
     //     },
-    //   },
-    //   {
-    //     $limit: 1
     //   },
     //   {
     //     $project: {
     //       title: 1,
-    //       description: 1,
-    //       dueDate: 1,
-    //       user_details: {
-    //         name: 1,
-    //         email: 1
-    //       }
-    //     }
-    //   }
+    //     },
+    //   },
     // ]);
-    
 
     res.status(200).json({ status: true, data: groups });
   } catch (error) {

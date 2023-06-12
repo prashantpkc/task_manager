@@ -4,10 +4,10 @@ const jwt = require("jsonwebtoken");
 
 exports.createUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, phone, password, role } = req.body;
 
     // Validate inputs
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !phone) {
       return res.status(400).json({
         status: false,
         message: "Name, email, and password are required",
@@ -27,15 +27,17 @@ exports.createUser = async (req, res) => {
     const newUser = await User.create({
       name,
       email,
+      phone,
       password: hashedPassword,
       role,
     });
 
     const token = jwt.sign({ userId: newUser._id }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
+      expiresIn: "1m",
     });
 
     res.cookie("token", token, {
+      expires: new Date(Date.now() + 300000),
       httpOnly: true,
       //   secure: true,
       sameSite: "none",
@@ -68,13 +70,14 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
+      expiresIn: "10m",
     });
 
     res.cookie("token", token, {
+      // expires: new Date(Date.now() + 300000),
       httpOnly: true,
-      //   secure: true,
-      sameSite: "none",
+        // secure: true,
+      // sameSite: "none",
     });
 
     res.status(200).json({

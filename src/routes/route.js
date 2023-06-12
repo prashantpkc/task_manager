@@ -7,7 +7,7 @@ const route = express.Router()
 
 
 
-route.post("/createUser", createUser)
+route.post("/register", createUser)
 
 route.post("/login",login)
 route.get("/logout", logout)
@@ -24,6 +24,7 @@ route.get('/getTaskById/:id',isAuthenticatedUser,authorizeRoles("admin"),getTask
 route.put('/task/:id',isAuthenticatedUser, updateTask)
 route.delete('/task/:id',isAuthenticatedUser, deleteTask)
 //aggregation
+
 route.get("/geteee", geteee)
 
 module.exports = route
